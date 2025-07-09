@@ -1,0 +1,23 @@
+const mongoose = require('mongoose');
+
+const ParkingSchema = new mongoose.Schema({
+  nome: {
+    type: String,
+    required: true
+  },
+  localizacao: {
+    rua: { type: String },
+    coordenadas: {
+      lat: { type: Number },
+      lng: { type: Number }
+    }
+  },
+  zona: {
+    type: String,
+    default: 'A'
+  }
+}, {
+  timestamps: true
+});
+
+module.exports = mongoose.models.Parking || mongoose.model('Parking', ParkingSchema);

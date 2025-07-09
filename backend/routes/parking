@@ -1,0 +1,27 @@
+const express = require('express');
+const router = express.Router();
+const Parking = require('../models/Parking');
+const { verificarToken, verificarAdmin } = require('../middleware/authMiddleware');
+
+// Criar novo estacionamento (admin)
+router.post('/', verificarToken, verificarAdmin, async (req, res) => {
+  try {
+    const parking = new Parking(req.body);
+    await parking.save();
+    res.status(201).json({ mensagem: 'Estacionamento criado com sucesso!', parking });
+  } catch (err) {
+    res.status(500).json({ mensagem: 'Erro ao criar estacionamento', erro: err.message });
+  }
+});
+
+// Listar estacionamentos
+router.get('/', verificarToken, async (req, res) => {
+  try {
+    const parkings = await Parking.find();
+    res.json(parkings);
+  } catch (err) {
+    res.status(500).json({ mensagem: 'Erro ao buscar estacionamentos' });
+  }
+});
+
+module.exports = router;

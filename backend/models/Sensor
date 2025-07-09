@@ -1,0 +1,11 @@
+const mongoose = require('mongoose');
+
+const SensorSchema = new mongoose.Schema({
+  id_sensor: String,
+  estado: String,
+  lat: Number,
+  lng: Number,
+  timestamp: Date
+});
+
+module.exports = mongoose.models.Sensor || mongoose.model('Sensor', SensorSchema);

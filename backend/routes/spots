@@ -1,0 +1,107 @@
+const express = require('express');
+const router = express.Router();
+const Spot = require('../models/Spot');
+const { verificarToken, verificarAdmin } = require('../middleware/authMiddleware');
+
+// Criar nova vaga (admin)
+router.post('/', verificarToken, verificarAdmin, async (req, res) => {
+  try {
+    const spot = new Spot(req.body);
+    await spot.save();
+    res.status(201).json({ mensagem: 'Vaga criada com sucesso!', spot });
+  } catch (err) {
+    res.status(500).json({ mensagem: 'Erro ao criar vaga', erro: err.message });
+  }
+});
+
+// Listar todas as vagas
+router.get('/', verificarToken, async (req, res) => {
+  try {
+    const spots = await Spot.find().populate('parkingId');
+    res.json(spots);
+  } catch (err) {
+    res.status(500).json({ mensagem: 'Erro ao buscar vagas' });
+  }
+});
+
+// Listar vagas por zona
+router.get('/zona/:zona', verificarToken, async (req, res) => {
+  try {
+    const spots = await Spot.find({ zona: req.params.zona });
+    res.json(spots);
+  } catch (err) {
+    res.status(500).json({ mensagem: 'Erro ao buscar vagas por zona' });
+  }
+});
+
+// Listar vagas livres por estacionamento
+router.get('/livres/:parkingId', verificarToken, async (req, res) => {
+  try {
+    const livres = await Spot.find({ parkingId: req.params.parkingId, estado: 'livre' });
+    res.json(livres);
+  } catch (err) {
+    res.status(500).json({ mensagem: 'Erro ao buscar vagas livres', erro: err.message });
+  }
+});
+
+// Filtrar por estado (livre, ocupado, reservado)
+router.get('/estado/:estado', verificarToken, async (req, res) => {
+  try {
+    const spots = await Spot.find({ estado: req.params.estado });
+    res.json(spots);
+  } catch (err) {
+    res.status(500).json({ mensagem: 'Erro ao buscar vagas por estado' });
+  }
+});
+
+// Buscar vaga por sensorId
+router.get('/sensor/:sensorId', verificarToken, async (req, res) => {
+  try {
+    const spot = await Spot.findOne({ sensorId: req.params.sensorId });
+    if (!spot) return res.status(404).json({ mensagem: 'Vaga não encontrada para esse sensor.' });
+    res.json(spot);
+  } catch (err) {
+    res.status(500).json({ mensagem: 'Erro ao buscar vaga por sensorId' });
+  }
+});
+
+// Resumo para dashboard (por zona ou geral)
+router.get('/dashboard/resumo', verificarToken, async (req, res) => {
+  try {
+    const total = await Spot.countDocuments();
+    const livres = await Spot.countDocuments({ estado: 'livre' });
+    const ocupados = await Spot.countDocuments({ estado: 'ocupado' });
+    const reservados = await Spot.countDocuments({ estado: 'reservado' });
+
+    res.json({
+      total,
+      livres,
+      ocupados,
+      reservados
+    });
+  } catch (err) {
+    res.status(500).json({ mensagem: 'Erro ao gerar resumo' });
+  }
+});
+
+// Atualizar vaga
+router.put('/:id', verificarToken, verificarAdmin, async (req, res) => {
+  try {
+    const updated = await Spot.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json({ mensagem: 'Vaga atualizada com sucesso.', spot: updated });
+  } catch (err) {
+    res.status(500).json({ mensagem: 'Erro ao atualizar vaga', erro: err.message });
+  }
+});
+
+// Apagar vaga
+router.delete('/:id', verificarToken, verificarAdmin, async (req, res) => {
+  try {
+    await Spot.findByIdAndDelete(req.params.id);
+    res.json({ mensagem: 'Vaga removida com sucesso.' });
+  } catch (err) {
+    res.status(500).json({ mensagem: 'Erro ao remover vaga', erro: err.message });
+  }
+});
+
+module.exports = router;

@@ -1,0 +1,237 @@
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+const { verificarToken, verificarAdmin } = require('../middleware/authMiddleware');
+
+const SensorSchema = new mongoose.Schema({
+  id_sensor: { type: String, required: true },
+  estado: { type: String, enum: ['livre', 'ocupado'], required: true },
+  lat: { type: Number, required: true },
+  lng: { type: Number, required: true },
+  timestamp: { type: Date, default: Date.now }
+});
+
+const Sensor = mongoose.models.Sensor || mongoose.model('Sensor', SensorSchema);
+
+// 🔒 GET todos os sensores (admin)
+router.get('/', verificarToken, verificarAdmin, async (req, res) => {
+  try {
+    const sensores = await Sensor.find();
+    res.json(sensores);
+  } catch (error) {
+    res.status(500).json({ error: "Erro ao buscar sensores" });
+  }
+});
+
+// 🌐 GET sensores públicos (sem token)
+router.get('/publico', async (req, res) => {
+  try {
+    const sensores = await Sensor.find();
+    res.json(sensores);
+  } catch (error) {
+    res.status(500).json({ erro: "Erro ao buscar sensores públicos" });
+  }
+});
+
+// ✅ POST novo sensor
+router.post('/', verificarToken, verificarAdmin, async (req, res) => {
+  const { id_sensor, estado, lat, lng, timestamp } = req.body;
+
+  try {
+    const novoSensor = new Sensor({
+      id_sensor,
+      estado,
+      lat,
+      lng,
+      timestamp: timestamp ? new Date(timestamp) : new Date()
+    });
+
+    await novoSensor.save();
+
+    // Emitir novo sensor via socket
+    const io = req.app.get('io');
+    io.emit('sensorAtualizado', novoSensor);
+
+    res.status(201).json({ mensagem: 'Sensor criado com sucesso!', sensor: novoSensor });
+  } catch (error) {
+    res.status(500).json({ mensagem: 'Erro ao criar sensor', erro: error.message });
+  }
+});
+
+// ✅ PUT atualizar sensor
+router.put('/:id', verificarToken, verificarAdmin, async (req, res) => {
+  const { id } = req.params;
+  const update = req.body;
+
+  try {
+    const sensorAtualizado = await Sensor.findByIdAndUpdate(id, update, { new: true });
+
+    const io = req.app.get('io');
+    io.emit('sensorAtualizado', sensorAtualizado);
+
+    res.json({ mensagem: 'Sensor atualizado com sucesso!', sensor: sensorAtualizado });
+  } catch (err) {
+    res.status(500).json({ erro: 'Erro ao atualizar sensor' });
+  }
+});
+
+// ✅ DELETE apagar sensor
+router.delete('/:id', verificarToken, verificarAdmin, async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(400).json({ mensagem: 'ID inválido.' });
+  }
+
+  try {
+    const sensorApagado = await Sensor.findByIdAndDelete(req.params.id);
+
+    const io = req.app.get('io');
+    io.emit('sensorApagado', { _id: req.params.id });
+
+    res.json({ mensagem: 'Sensor apagado com sucesso.' });
+  } catch (err) {
+    res.status(500).json({ mensagem: 'Erro ao apagar sensor' });
+  }
+});
+
+module.exports = router;
+
+
+// const express = require('express');
+// const router = express.Router();
+// const mongoose = require('mongoose');
+// const { verificarToken, verificarAdmin } = require('../middleware/authMiddleware');
+
+// // ✅ Modelo Sensor (evita recriar se já existir)
+// const SensorSchema = new mongoose.Schema({
+//   id_sensor: { type: String, required: true },
+//   estado: { type: String, enum: ['livre', 'ocupado'], required: true },
+//   lat: { type: Number, required: true },
+//   lng: { type: Number, required: true },
+//   timestamp: { type: Date, default: Date.now }
+// });
+
+// const Sensor = mongoose.models.Sensor || mongoose.model('Sensor', SensorSchema);
+
+// // ✅ GET sensores (admin only)
+// router.get('/', verificarToken, verificarAdmin, async (req, res) => {
+//   try {
+//     const sensores = await Sensor.find();
+//     res.json(sensores);
+//   } catch (error) {
+//     console.error("❌ Erro ao buscar sensores:", error);
+//     res.status(500).json({ error: "Erro ao buscar sensores" });
+//   }
+// });
+
+
+// // ✅ POST novo sensor (admin only)
+// router.post('/', verificarToken, verificarAdmin, async (req, res) => {
+//   const { id_sensor, estado, lat, lng, timestamp } = req.body;
+
+//   try {
+//     const novoSensor = new Sensor({
+//       id_sensor,
+//       estado,
+//       lat,
+//       lng,
+//       timestamp: timestamp ? new Date(timestamp) : new Date()
+//     });
+
+//     await novoSensor.save();
+
+//     res.status(201).json({ mensagem: 'Sensor criado com sucesso!', sensor: novoSensor });
+//   } catch (error) {
+//     res.status(500).json({ mensagem: 'Erro ao criar sensor', erro: error.message });
+//   }
+// });
+
+// router.get('/publico', async (req, res) => {
+//   try {
+//     const sensores = await Sensor.find();
+//     res.json(sensores);
+//   } catch (error) {
+//     console.error("❌ Erro ao buscar sensores públicos:", error);
+//     res.status(500).json({ erro: "Erro ao buscar sensores públicos" });
+//   }
+// });
+
+// // router.put('/:id', verificarToken, verificarAdmin, async (req, res) => {
+// //   try {
+// //     const sensor = await Sensor.findByIdAndUpdate(
+// //       req.params.id,
+// //       { estado: req.body.estado },
+// //       { new: true }
+// //     );
+// //     res.json({ mensagem: 'Sensor atualizado', sensor });
+// //   } catch (err) {
+// //     res.status(500).json({ mensagem: 'Erro ao atualizar sensor' });
+// //   }
+// // });
+
+
+// // router.put('/:id', verificarToken, verificarAdmin, async (req, res) => {
+// //   try {
+// //     const { estado, lat, lng } = req.body;
+
+// //     const sensor = await Sensor.findById(req.params.id);
+// //     if (!sensor) {
+// //       return res.status(404).json({ mensagem: 'Sensor não encontrado' });
+// //     }
+
+// //     sensor.estado = estado;
+// //     sensor.lat = lat;
+// //     sensor.lng = lng;
+// //     sensor.timestamp = new Date(); // atualiza com a hora atual
+
+// //     await sensor.save();
+
+// //     res.json({ mensagem: 'Sensor atualizado com sucesso!', sensor });
+// //   } catch (err) {
+// //     console.error('❌ Erro ao atualizar sensor:', err);
+// //     res.status(500).json({ mensagem: 'Erro ao atualizar sensor' });
+// //   }
+// // });
+
+
+// router.put('/:id', verificarAdmin, async (req, res) => {
+//   const { id } = req.params;
+//   const update = req.body;
+
+//   try {
+//     const sensorAtualizado = await Sensor.findByIdAndUpdate(id, update, { new: true });
+
+//     // ✅ EMITIR EVENTO SOCKET
+//     const io = req.app.get('io'); // recupera o socket
+//     io.emit('sensorAtualizado', sensorAtualizado); // envia para todos os clientes
+
+//     res.json(sensorAtualizado);
+//   } catch (err) {
+//     res.status(500).json({ erro: 'Erro ao atualizar sensor' });
+//   }
+// });
+
+
+// router.delete('/:id', verificarToken, verificarAdmin, async (req, res) => {
+//   try {
+//     await Sensor.findByIdAndDelete(req.params.id);
+//     res.json({ mensagem: 'Sensor apagado com sucesso.' });
+//   } catch (err) {
+//     res.status(500).json({ mensagem: 'Erro ao apagar sensor' });
+//   }
+// });
+// router.delete('/:id', verificarToken, verificarAdmin, async (req, res) => {
+//   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+//     return res.status(400).json({ mensagem: 'ID inválido.' });
+//   }
+
+//   try {
+//     await Sensor.findByIdAndDelete(req.params.id);
+//     res.json({ mensagem: 'Sensor apagado com sucesso.' });
+//   } catch (err) {
+//     console.error("❌ Erro ao apagar sensor:", err);
+//     res.status(500).json({ mensagem: 'Erro ao apagar sensor' });
+//   }
+// });
+
+
+// module.exports = router;
