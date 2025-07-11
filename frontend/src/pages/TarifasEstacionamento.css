@@ -1,0 +1,19 @@
+.text-orange {
+  color: #0c0c0c; /* cor aproximada ao botão laranja da EMEP #007bff;*/
+}
+
+.card:hover {
+  transform: scale(1.02);
+  transition: 0.3s ease-in-out;
+}
+
+.card .btn-warning {
+  background-color: #0c0c0c;
+  border-color: #0c0c0c;
+  color: #fff;
+}
+
+.card .btn-warning:hover {
+  background-color: #d97706;
+  border-color: #d97706;
+}

@@ -1,0 +1,239 @@
+/* html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  font-family: 'Poppins', sans-serif;
+} */
+
+.fullwidth-only {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  max-width: 100% !important;
+}
+
+.hero-container {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.hero {
+  height: 100vh;
+  /* LINHA REMOVIDA: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), */
+  background:
+    url('../assets/images/DJI_0273-Edit-scaled.jpg') center center no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+  color: white;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1;margin-top: -100px;
+}
+
+.hero h1 {
+  font-size: 3.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.3rem;
+  margin-bottom: 2rem;
+  max-width: 700px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1rem;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+section {
+  padding: 80px 0;
+}
+
+section h2 {
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+p.text-center {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.funcionalidades .col-md-4 {
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+  margin-bottom: 30px;
+  transition: transform 0.3s ease;
+}
+
+.funcionalidades .col-md-4:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+footer {
+  background-color: #001f3f;
+  color: white;
+  padding: 40px 0;
+  margin-top: 60px;
+  text-align: center;
+}
+
+footer a {
+  color: #ffffff;
+  text-decoration: none;
+  margin: 0 12px;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+/* .funcional-box {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 250px;
+  color: white;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+} */
+
+.funcional-box {
+  height: 250px;
+  border-radius: 12px;
+  color: white;
+  padding: 20px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.funcional-box:hover {
+  transform: translateY(-5px);
+}
+
+/* .funcional-mapa {
+  background-image: url('/images/pexels-carro-smartphone.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+} */
+
+.funcional-alerta {
+  background-image: url('https://images.pexels.com/photos/6347727/pexels-photo-6347727.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=300');
+}
+
+.funcional-dashboard {
+  background-image: url('https://images.pexels.com/photos/669610/pexels-photo-669610.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=300');
+}
+
+.funcionalidades .col-md-4 {
+  margin-left: 15px;
+  margin-right: 15px;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+  height: 230px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.funcionalidades .col-md-4:hover {
+  transform: translateY(-5px);
+}
+
+.funcionalidades {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.funcionalidades {
+  display: flex;
+  gap: 0px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.funcional-box {
+  position: relative;
+  height: 220px;
+  width: 100%;
+  max-width: 350px;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.funcional-box::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* background: rgba(0, 0, 0, 0.5); /* escurece a imagem */ /* ESTA LINHA FOI COMENTADA SE QUISER CLAREAR OS BOX DE FUNCIONALIDADES*/
+  z-index: 1;
+}
+
+.funcional-box h5,
+.funcional-box p {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+/* .texto-fundo {
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 15px;
+  border-radius: 8px;
+  width: 100%;
+} */

@@ -1,0 +1,105 @@
+/*
+ * Login Page Specific Styles
+ *
+ * This file contains styles that are unique to the Login component,
+ * enhancing its appearance beyond Bootstrap's default utilities.
+ */
+
+/* Main container styling for the background and centering */
+.login-container {
+  /* Using min-height: 100vh; and flexbox to center content vertically and horizontally */
+  min-height: 100vh;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+
+  /* Background image properties */
+  background-size: cover; /* Ensures the image covers the entire container */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents image repetition */
+  background-attachment: fixed; /* Optional: creates a parallax scrolling effect */
+  filter: brightness(0.8); /* Slightly darkens the background for better text contrast */
+}
+
+/* Card styling for the login form itself */
+.login-card {
+  width: 100%;
+  max-width: 400px; /* Limits the maximum width of the card */
+  padding: 2.5rem; /* Increased padding for more breathing room inside the card */
+  border-radius: 0.75rem; /* Slightly more rounded corners */
+  background-color: rgba(255, 255, 255, 0.95); /* Semi-transparent white background */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* More pronounced shadow for depth */
+  backdrop-filter: blur(5px); /* Optional: adds a subtle blur effect behind the card content */
+}
+
+/* Styling for the heading within the login card */
+.login-card h4 {
+  color: #003366; /* A deep blue for primary text, matching potential brand colors */
+  font-weight: 600; /* Slightly bolder font for headings */
+  margin-bottom: 1.75rem; /* Increased margin below the heading */
+}
+
+/* Customizing Bootstrap's alert for error messages */
+.login-card .alert-danger {
+  font-size: 0.9rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 0.5rem;
+  background-color: #f8d7da; /* Lighter red background */
+  color: #721c24; /* Darker red text */
+  border-color: #f5c6cb; /* Matching border color */
+}
+
+/* Styling for form labels */
+.login-card .form-label {
+  font-weight: 500; /* Slightly bolder labels */
+  color: #333; /* Darker text for labels */
+}
+
+/* Styling for form input fields */
+.login-card .form-control {
+  border-radius: 0.5rem; /* Rounded input fields */
+  padding: 0.75rem 1rem; /* More vertical padding */
+  border: 1px solid #ced4da; /* Default Bootstrap border */
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.login-card .form-control:focus {
+  border-color: #80bdff; /* Standard Bootstrap focus blue */
+  box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25); /* Standard Bootstrap focus shadow */
+  outline: none; /* Remove default outline */
+}
+
+/* Styling for the submit button */
+.login-card .btn-primary {
+  background-color: #0056b3; /* Primary blue button */
+  border-color: #0056b3;
+  padding: 0.75rem 1.5rem; /* Generous padding for the button */
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+.login-card .btn-primary:hover:not(:disabled) {
+  background-color: #004085; /* Darker blue on hover */
+  border-color: #003366;
+}
+
+.login-card .btn-primary:disabled {
+  opacity: 0.6; /* Reduced opacity when disabled */
+  cursor: not-allowed; /* Indicate that the button is not interactive */
+}
+
+/* Spinner styling for loading state */
+.login-card .spinner-border {
+  margin-right: 0.5rem; /* Space between spinner and text */
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .login-card {
+    margin: 1.5rem; /* Add margin on smaller screens to prevent sticking to edges */
+    padding: 2rem;
+  }
+}
