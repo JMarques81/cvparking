@@ -1,0 +1,58 @@
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_HMC5883_U.h>
+#include <SoftwareSerial.h>
+
+Adafruit_HMC5883_Unified mag = Adafruit_HMC5883_Unified(12345);
+
+// UART para o E220
+SoftwareSerial loraSerial(6, 7); // RX, TX
+
+float z_base = 0;
+bool estadoAnterior = false;
+
+void setup() {
+  Serial.begin(9600);
+  loraSerial.begin(9600);
+
+  if (!mag.begin()) {
+    Serial.println("Sensor não encontrado!");
+    while (1);
+  }
+
+  delay(2000);
+  sensors_event_t event;
+  mag.getEvent(&event);
+  z_base = event.magnetic.z;
+  Serial.print("Z base: "); Serial.println(z_base);
+}
+
+void loop() {
+  sensors_event_t event;
+  mag.getEvent(&event);
+
+  float z = event.magnetic.z;
+  float delta = abs(z - z_base);
+
+  bool carroPresente = (delta > 1.0);
+
+  Serial.print("Z: "); Serial.print(z);
+  Serial.print(" | Diferença: "); Serial.print(delta);
+  Serial.print(" | Estado: "); Serial.println(carroPresente ? "🚗 Ocupado" : "🟢 Livre");
+
+  if (carroPresente != estadoAnterior) {
+    estadoAnterior = carroPresente;
+
+    String estado = carroPresente ? "ocupado" : "livre";
+    enviarMensagem(estado);
+  }
+
+  delay(1000);
+}
+
+// Função para formatar e enviar JSON via LoRa e Serial
+void enviarMensagem(String estado) {
+  String mensagem = "{\"id_sensor\":\"sensor_01\",\"estado\":\"" + estado + "\"}";
+  loraSerial.println(mensagem);  // envia para o E220 via UART
+  Serial.print("📤 Enviado: "); Serial.println(mensagem);
+}
