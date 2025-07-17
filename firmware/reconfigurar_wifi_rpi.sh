@@ -1,3 +1,13 @@
+Iniciar o serviço wpa_supplicant com o ficheiro de configuração (/etc/wpa_supplicant/wpa_supplicant.conf)
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=CV
+
+network={
+    ssid="NOME_DA_REDE"
+    psk="PALAVRA_PASSE"
+}
+
 # Mata qualquer instância anterior do wpa_supplicant
 sudo killall wpa_supplicant
 
